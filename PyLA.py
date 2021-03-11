@@ -11,16 +11,13 @@ class Tuple( Value ):
     def __init__(self,value):
         self.value = value
 
-class Literal:
+class Literal( Value ):
     def __init__(self,value):
         self.value = value
 
 class Symbol:
     def __init__(self,name,value):
         self.name = name
-        #será que quero permitir isto? não garante uso correto do construtor
-        #if isinstance(value,Value):
-        #    self.value = value
         if isinstance(value,list) or isinstance(value,tuple):
             self.value = Tuple(value)
         if isinstance(value,dict):
@@ -59,6 +56,7 @@ class Symbol:
     #TODO: index by expression, multiple indexation
     def __getitem__(self,key):
         return Expr(self,'[]',key)
+
 class Constant( Symbol ):
     pass
 
@@ -103,6 +101,8 @@ class Formula:
 
     def __str__(self):
         return str(self.formulas)
+    
+class Conjunction( Formula ):
     def __and__(self,other):
         if isinstance(other,Predicate):
             self.formulas.append(other)
@@ -112,16 +112,11 @@ class Formula:
         if isinstance(other,Variable):
             return Conjunction(self,UnaryPredicate('',other))
     def __or__(self,other):
+        if isinstance(other,Predicate) or isinstance(other,Formula):
+            return Disjunction(self,other)
         if isinstance(other,Variable):
             self.formulas.append(UnaryPredicate('',other))
             return self
-        if isinstance(other,Predicate):
-            self.formulas.append(other)
-            return self
-        if isinstance(other,Formula):
-            return Conjunction(self,other)
-    
-class Conjunction( Formula ):
     def print(self,tabs=''):
         for f in self.formulas:
             if isinstance(f,Formula):
@@ -129,6 +124,20 @@ class Conjunction( Formula ):
             else:
                 print(f'{tabs}/\{f}')
 class Disjunction( Formula ):
+    def __and__(self,other):
+        if isinstance(other,Predicate) or isinstance(other,Formula):
+            return Conjunction(self,other)
+        if isinstance(other,Variable):
+            return Conjunction(self,UnaryPredicate('',other))
+    def __or__(self,other):
+        if isinstance(other,Predicate):
+            self.formulas.append(other)
+            return self
+        if isinstance(other,Formula):
+            return Disjunction(self,other)
+        if isinstance(other,Variable):
+            self.formulas.append(UnaryPredicate('',other))
+            return self
     def print(self,tabs=''):
         for f in self.formulas:
             if isinstance(f,Formula):
@@ -143,10 +152,10 @@ class Step:
 
 class Definition:
     #example: Messages == {x \in 1..10 | x % 2 = 0}
-    pass
-
+    def __init__(self,name, expr)
 class TLA:
     def __init__(self):
         self.constants = { }
         self.variables = set ()
         self.steps = []
+        self.definitions = []
