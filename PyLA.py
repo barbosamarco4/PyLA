@@ -17,16 +17,15 @@ class Value():
             raise TypeError(f'Can\'t index an instance of {self.valueType}')
 
     def __eq__(self,other):
-        if isinstance(self,(int,Int)) and isinstance(other,(int,Int)):
-            return BinaryPredicate(self,'=',other)
+        return BinaryPredicate(self,'=',  other)
     def __ne__(self,other):
-        return BinaryPredicate(self,'#',other)
+        return BinaryPredicate(self,'#',  other)
     def __lt__(self,other):
-        return BinaryPredicate(self,'<',other)
+        return BinaryPredicate(self,'<',  other)
     def __le__(self,other):
-        return BinaryPredicate(self,'<=',other)
+        return BinaryPredicate(self,'<=', other)
     def __gt__(self,other):
-        return BinaryPredicate(self,'>', other)
+        return BinaryPredicate(self,'>',  other)
     def __ge__(self,other):
         return BinaryPredicate(self,'>=', other)
 
@@ -46,11 +45,8 @@ class Value():
         return BinaryPredicate(self,'\in',other)
 
 class Expr:
-    def __init__(self,lhs,op,rhs):
-        self.lhs = lhs
-        self.op = op
-        self.rhs = rhs
-
+    def __init__(self,lhs,op,rhs): 
+        Var(f'{lhs.name} {op} {rhs.name}',valueType=Int())    
     def __eq__(self,other):
         return BinaryPredicate(self,'=',other)
     def __ne__(self,other):

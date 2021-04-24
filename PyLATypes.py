@@ -35,7 +35,7 @@ class Function:
     def __init__(self,domain,image):
         self.domain = domain
         self.image  = image
-    def check(self,value):
+    def check(self,(iden,val)):
         return
      
 def TypeChecker(name,value,valueType):
