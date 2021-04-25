@@ -35,8 +35,9 @@ class Function:
     def __init__(self,domain,image):
         self.domain = domain
         self.image  = image
-    def check(self,(iden,val)):
-        return
+    def check(self,id_val):
+        (iden,val) = id_val
+        return True
      
 def TypeChecker(name,value,valueType):
     if value!=None  and not valueType.check(value):

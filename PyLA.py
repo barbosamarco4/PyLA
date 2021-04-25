@@ -1,5 +1,7 @@
+from PyLATypes import *
+
 class Value():
-    def __init__(self,name,value=None,valueType=NoneType):
+    def __init__(self,name,value=None,valueType=None):
         TypeChecker(name,value,valueType)
         self.name      = name
         self.value     = value
@@ -11,7 +13,7 @@ class Value():
     def __getitem__(self,key):
         if isinstance(self.valueType, (Record,Tuple,Sequence)):
             return Value(f'{self.name}[{key}]',valueType=self.valueType.child)
-        elif isinstance((self.valueType, Function)):
+        elif isinstance(self.valueType, Function):
             return Value(f'{self.name}[{key}]',valueType=self.valueType.image)
         else:
             raise TypeError(f'Can\'t index an instance of {self.valueType}')
@@ -41,24 +43,15 @@ class Value():
         return UnaryPredicate('~',self.name)
 
     #TODO: check if other is Set/Abstract
-    def in(self,other):
+    def is_in(self,other):
         return BinaryPredicate(self,'\in',other)
 
-class Expr:
-    def __init__(self,lhs,op,rhs): 
-        Var(f'{lhs.name} {op} {rhs.name}',valueType=Int())    
-    def __eq__(self,other):
-        return BinaryPredicate(self,'=',other)
-    def __ne__(self,other):
-        return BinaryPredicate(self,'#',other)
-    def __lt__(self,other):
-        return BinaryPredicate(self,'<',other)
-    def __le__(self,other):
-        return BinaryPredicate(self,'<=',other)
-    def __gt__(self,other):
-        return BinaryPredicate(self,'>', other)
-    def __ge__(self,other):
-        return BinaryPredicate(self,'>=', other)
+def Records(definition):
+    
+def Functions(domain,codomain):
+
+def Expr(lhs,op,rhs): 
+    Value(f'{lhs.name} {op} {rhs.name}',valueType=Int())    
 
 class Predicate:
     def __and__(self,other):
