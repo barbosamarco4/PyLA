@@ -62,6 +62,9 @@ def ITE(condition, value1, value2):
     # TODO: Infer and compare value1 and value 2
     # TODO: Typecheck arguments?
     return Value(f'IF {condition} THEN {value1} ELSE {value2}')
+def Enabled(step):
+    #TODO: 'typecheck' step
+    return Value(f'ENABLED {step.name}')
 class Definition:
     def __init__(self, name, expr):
         self.name = name
@@ -115,9 +118,15 @@ class Conjunction( Formula ):
             self.formulas.append(UnaryPredicate('',other))
             return self
     def print(self,tabs=''):
-        for f in self.formulas:
+        if isinstance(self.formulas[0],Formula):
+            print(f'\t/\\', end='')
+            self.formulas[0].print(tabs+'\t')
+        else:
+            print(f'\t/\\ {self.formulas[0]}')
+            
+        for f in self.formulas[1:]:
             if isinstance(f,Formula):
-                print('/\\', end='')
+                print(f'{tabs}/\\', end='')
                 f.print(tabs+'\t')
             else:
                 print(f'{tabs}/\ {f}')
@@ -138,7 +147,13 @@ class Disjunction( Formula ):
             self.formulas.append(UnaryPredicate('',other))
             return self
     def print(self,tabs=''):
-        for f in self.formulas:
+        if isinstance(self.formulas[0],Formula):
+            print(f'\t\/', end='')
+            self.formulas[0].print(tabs+'\t')
+        else:
+            print(f'\t\/ {self.formulas[0]}')
+
+        for f in self.formulas[1:]:
             if isinstance(f,Formula):
                 print(f'{tabs}\\/', end='')
                 f.print(tabs+'\t')
@@ -159,8 +174,35 @@ class Definition:
         pass
 class TLA:
     def __init__(self):
-        self.constants = { }
-        self.variables = set ()
-        self.definitions = []
-    def addStep(self,steps):
-        pass
+        self.constants = []
+        self.variables = []
+        self.steps = []
+    def addStep(self,step):
+        self.steps = self.steps + [step]
+    def addSteps(self,steps):
+        self.steps = self.steps + steps
+    def addConstants(self,constants):
+        self.constants = self.constants + constants
+    def addConstant(self,constant):
+        self.constants = self.constants + [constant]
+    def addVariables(self,variables):
+        self.variables = self.variables + variables
+    def addVariable(self,variable):
+        self.variables = self.variables + [variable]
+    def print(self):
+        if(self.variables != []):
+            print('VARIABLES')
+            print(f'\t{self.variables[0]}',end='')
+            for v in self.variables[1:]:
+                print(f', \n\t{v}',end='')
+            print('\n')
+
+        if(self.constants != []):
+            print('CONSTANTS')
+            print(f'\t{self.constants[0]}',end='')
+            for c in self.constants[1:]:
+                print(f', \n\t{c}',end='')
+            print('\n')
+        
+        for step in self.steps:
+            step.print()
