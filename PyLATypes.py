@@ -8,7 +8,7 @@ class Bool:
     def check(self,value):
         return isinstance(value,bool)
 
-#TODO: Check type of child
+#TODO: Check type of child(i.e: child has a valid type)
 class Record:
     def __init__(self,child):
         self.child = child
